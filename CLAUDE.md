@@ -20,10 +20,16 @@ Neuer Code möglichst in eigene Dateien, im offiziellen Code nur kurze Anschluss
 
 Start über `PhotoCraft-Eigen.cmd` im Installationsordner, mit eigenem Einstellungsordner. Die offizielle App in `C:\Program Files` aktualisiert weiter der Launcher.
 
+Ein Build ohne Cache dauert auf dem Laptop etwa 50 Minuten (gemessen 03.11.2026). Vorher den Schlafmodus abwenden, sonst bricht er ab. Danach geht es dank `target/` schneller.
+
 GitHub Actions sind im Fork abgeschaltet.
+
+## KI-Skalierung
+
+`eigen/hochskalieren.sh` skaliert die Bilder aus `~/Documents/Craft/ein` nach `~/Documents/Craft/aus`: zuerst Real-ESRGAN (`~/Apps/realesrgan`, Modell x4plus) 4x, danach PhotoCraft (bicubicSharper) auf den Faktor (Standard 2, längste Kante höchstens 3840). Das ist ein externer Ablauf, im PhotoCraft-Code ist nichts eingebaut.
 
 ## Wiedereinstieg
 
-Stand 03.11.2026: Grundgerüst steht, `eigen` enthält noch keine eigenen Funktionen. KI-Skalierung ist noch nicht eingebaut: Real-ESRGAN liegt in `~/Apps/realesrgan`, offen sind die Qualitätsprobe mit Jens' Bildern und die Nachfrage in Issue #2942 (externes Programm oder Aufbau auf PR #8104).
+Stand 03.11.2026: Grundgerüst steht. v0.19.0 ist als eigene Version gebaut und in `~/Apps/PhotoCraft-Eigen` installiert. `eigen` enthält noch keine eigenen Funktionen. Offen sind die Qualitätsprobe des Skalier-Skripts mit Jens' Fotos und ein Kommentar in Issue #2942 (externes Programm oder Aufbau auf PR #8104), der noch auf Jens' Freigabe wartet.
 
 Bei „weitermachen“: `git status`, `git log --oneline -5`, dann diesen Abschnitt prüfen. Bei „Stand sichern“: diesen Abschnitt aktualisieren, committen, `eigen` pushen.
