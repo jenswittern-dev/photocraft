@@ -30,6 +30,6 @@ GitHub Actions sind im Fork abgeschaltet.
 
 ## Wiedereinstieg
 
-Stand 03.11.2026: Grundgerüst steht. v0.19.0 ist als eigene Version gebaut und in `~/Apps/PhotoCraft-Eigen` installiert. `eigen` enthält noch keine eigenen Funktionen. Offen sind die Qualitätsprobe des Skalier-Skripts mit Jens' Fotos und ein Kommentar in Issue #2942 (externes Programm oder Aufbau auf PR #8104), der noch auf Jens' Freigabe wartet.
+Stand 03.11.2026: Grundgerüst steht. v0.19.0 ist als eigene Version gebaut und in `~/Apps/PhotoCraft-Eigen` installiert. `eigen` enthält noch keine eigenen Funktionen. Offen ist die Qualitätsprobe des Skalier-Skripts mit Jens' Fotos. Einen Kommentar in Issue #2942 (externes Programm oder Aufbau auf PR #8104) hat Jens am 03.11.2026 abgelehnt; nicht erneut vorschlagen, solange er es nicht selbst anspricht.
 
 Bei „weitermachen“: `git status`, `git log --oneline -5`, dann diesen Abschnitt prüfen. Bei „Stand sichern“: diesen Abschnitt aktualisieren, committen, `eigen` pushen.
