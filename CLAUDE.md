@@ -28,6 +28,8 @@ GitHub Actions sind im Fork abgeschaltet.
 
 `eigen/hochskalieren.sh` skaliert die Bilder aus `~/Documents/Craft/ein` nach `~/Documents/Craft/aus`: zuerst Real-ESRGAN (`~/Apps/realesrgan`, Modell x4plus) 4x, danach PhotoCraft (bicubicSharper) auf den Faktor (Standard 2, längste Kante höchstens 3840). Das ist ein externer Ablauf, im PhotoCraft-Code ist nichts eingebaut.
 
+Jens' Alltagsweg ist der Explorer-Rechtsklick „Mit KI hochskalieren (2x)“ (Windows 11: unter „Weitere Optionen anzeigen“). Er legt `<name>-2x.png` neben das Original und öffnet es in der offiziellen PhotoCraft. Eingerichtet wird er mit `eigen\kontextmenue-einrichten.cmd`: Das kopiert die Skripte nach `~/Apps/KI-Hochskalieren` und schreibt den Schlüssel `HKCU\Software\Classes\SystemFileAssociations\image\shell\KIHochskalieren`. Nach Änderungen am Skript erneut ausführen; `/entfernen` nimmt den Eintrag heraus. Ein Menübefehl in PhotoCraft selbst ist bewusst zurückgestellt, bis klar ist, ob PR #8104 die Funktion offiziell bringt.
+
 ## Wiedereinstieg
 
 Stand 03.11.2026: Grundgerüst steht. v0.19.0 ist als eigene Version gebaut und in `~/Apps/PhotoCraft-Eigen` installiert. `eigen` enthält noch keine eigenen Funktionen. Offen ist die Qualitätsprobe des Skalier-Skripts mit Jens' Fotos. Einen Kommentar in Issue #2942 (externes Programm oder Aufbau auf PR #8104) hat Jens am 03.11.2026 abgelehnt; nicht erneut vorschlagen, solange er es nicht selbst anspricht.

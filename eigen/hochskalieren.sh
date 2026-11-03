@@ -4,23 +4,30 @@
 #   eigen/hochskalieren.sh                      alle Bilder in Documents/Craft/ein, Faktor 2
 #   eigen/hochskalieren.sh --faktor 3 bild.png  bestimmte Dateien, anderer Faktor
 #   eigen/hochskalieren.sh --max 3840           laengste Kante hoechstens 3840 px (Standard: 3840, also 4K)
+#   eigen/hochskalieren.sh --neben --oeffnen B  Ergebnis neben das Original legen und in PhotoCraft oeffnen
+#                                               (so ruft es der Explorer-Rechtsklick auf, KI-Hochskalieren.cmd)
 #
 # Ergebnis als PNG in Documents/Craft/aus, Name <name>-<faktor>x.png. Vorhandene Ergebnisse werden
 # uebersprungen. Alles laeuft lokal, kein Bild verlaesst den Rechner.
 set -euo pipefail
 ESRGAN="${REALESRGAN_DIR:-$HOME/Apps/realesrgan}"
 PC="${PHOTOCRAFT_CLI:-/c/Program Files/ArtCraft/PhotoCraft/photocraft-cli.exe}"
+PC_APP="${PHOTOCRAFT_APP:-/c/Program Files/ArtCraft/PhotoCraft/photocraft.exe}"
 EIN="$HOME/Documents/Craft/ein"
 AUS="$HOME/Documents/Craft/aus"
 FAKTOR=2
 MAX=3840
+NEBEN=0
+OEFFNEN=0
 DATEIEN=()
 while [ $# -gt 0 ]; do
   case "$1" in
     --faktor) FAKTOR="$2"; shift 2 ;;
     --max) MAX="$2"; shift 2 ;;
+    --neben) NEBEN=1; shift ;;
+    --oeffnen) OEFFNEN=1; shift ;;
     -*) echo "Unbekannte Option: $1" >&2; exit 2 ;;
-    *) DATEIEN+=("$1"); shift ;;
+    *) DATEIEN+=("$(cygpath -u "$1")"); shift ;;
   esac
 done
 if [ ${#DATEIEN[@]} -eq 0 ]; then
@@ -33,8 +40,13 @@ TMP="$(mktemp -d)"
 trap 'rm -rf "$TMP"' EXIT
 for f in "${DATEIEN[@]}"; do
   name="$(basename "${f%.*}")"
-  ziel="$AUS/$name-${FAKTOR}x.png"
-  if [ -f "$ziel" ]; then echo "Schon da: $ziel"; continue; fi
+  if [ "$NEBEN" -eq 1 ]; then ziel="$(dirname "$f")/$name-${FAKTOR}x.png"; else ziel="$AUS/$name-${FAKTOR}x.png"; fi
+  if [ -f "$ziel" ]; then
+    echo "Schon da: $(cygpath -w "$ziel")"
+    [ "$OEFFNEN" -eq 0 ] || cmd.exe //c start "" "$(cygpath -w "$PC_APP")" "$(cygpath -w "$ziel")"
+    continue
+  fi
+  echo "Skaliere $(basename "$f") ... (dauert einige Minuten)"
   read -r w h < <("$PC" info "$(cygpath -w "$f")" | python -I -c "import json,sys; d=json.load(sys.stdin); print(d['width'], d['height'])" | tr -d '\r')
   zw=$(python -I -c "w,h,f,m=$w,$h,$FAKTOR,$MAX; s=min(f, m/max(w,h)); print(round(w*s))" | tr -d '\r')
   [ "$zw" -gt "$w" ] || { echo "Uebersprungen, schon groesser als $MAX px: $f"; continue; }
@@ -44,5 +56,6 @@ for f in "${DATEIEN[@]}"; do
     || { echo "Real-ESRGAN fehlgeschlagen bei $f:" >&2; tail -5 "$TMP/log.txt" >&2; exit 1; }
   "$PC" run "$(cygpath -w "$TMP/4x.png")" --cmd image.imageSize \
     --params "{\"width\":$zw,\"resample\":\"bicubicSharper\"}" --out "$(cygpath -w "$ziel")" > /dev/null
-  echo "Fertig: $ziel (${w}x$h -> Breite $zw, $(( $(date +%s)-s )) s)"
+  echo "Fertig: $(cygpath -w "$ziel") (${w}x$h -> Breite $zw, $(( $(date +%s)-s )) s)"
+  [ "$OEFFNEN" -eq 0 ] || cmd.exe //c start "" "$(cygpath -w "$PC_APP")" "$(cygpath -w "$ziel")"
 done
